@@ -2,25 +2,61 @@ import streamlit as st
 import time
 import datetime
 import arrow
+import random
 
 tz = datetime.timezone(
     datetime.timedelta(hours=8),
     name='Asia/Shanghai',
 )
 
+colors = ['blue', 'green', 'orange', 'red', 'violet', 'gray', 'rainbow']
+emojis = ['🧸', '🎊', '🎉', '🎎', '🪭', '🏮', '🏮']
+
+page_icon = "🧸"
+page_title = "快乐时间倒计时"
+
+def rc():
+    return random.choice(colors)
+
+def re():
+    return random.choice(emojis)
+
+def rsc(input: str, ignores: list=None):
+    if not ignores:
+        ignores = []
+
+    output = ""
+
+    for i in input:
+        if i.strip() and i.strip() not in ignores:
+            output += f':{rc()}[{i}]'
+        else:
+            output += i
+    return output
+
 help_text = """
-春有百花秋有月，夏有凉风冬有雪。\n
-若无闲事挂心头，便是人间好时节。\n
+**珍惜当下**
+
+春有百花秋有月，夏有凉风冬有雪。
+
+若无闲事挂心头，便是人间好时节。
 """
 
-random_image = "https://source.unsplash.com/1600x900/?background"
+real_help_text = rsc(help_text, ['*'])
 
-st.set_page_config(page_title="快乐时间倒计时", page_icon="🧸")
-st.header(f"🧸 快乐时间倒计时")
+
+random_image = "https://source.unsplash.com/1600x900/?background"
+img_ref = "https://unsplash.com/"
+
+st.set_page_config(page_title=page_title, page_icon=page_icon)
+st.header(f":rainbow[{page_icon}]" + rsc(f" _{page_title}_", ignores=['_']))
 
 params = st.experimental_get_query_params()
 
 def initialize_default_datetime():
+    # if 'dest_datetime' in st.session_state:
+    #     return arrow.get(st.session_state.dest_datetime)
+
     value = params.get('datetime', [])
 
     if value and isinstance(value, list):
@@ -40,29 +76,32 @@ dest_date = date_col.date_input(
 dest_time = time_col.time_input(
     "时间",
     value=initialize_default_datetime().time(),
+    step=datetime.timedelta(minutes=5),
 )
 
-st.image(random_image, caption="来自 unsplash")
+dest_day = datetime.datetime(
+    year=dest_date.year,
+    month=dest_date.month,
+    day=dest_date.day,
+    hour=dest_time.hour,
+    minute=dest_time.minute,
+    second=dest_time.second,
+    tzinfo=tz
+)
 
 # st.subheader("", divider="rainbow")
 
+image = st.image(random_image + f'&_m={str(datetime.datetime.now(tz=tz).minute)}')
+st.caption(rsc("图片来自 [unsplash]", ignores=['[', ']']) + f'({img_ref})')
+
 container = st.empty()
 
+n = 0
 while True:
     now = datetime.datetime.now(tz=tz)
 
-    dest_day = datetime.datetime(
-        year=dest_date.year,
-        month=dest_date.month,
-        day=dest_date.day,
-        hour=dest_time.hour,
-        minute=dest_time.minute,
-        second=dest_time.second,
-        tzinfo=tz
-    )
-
     if dest_day < now:
-        container.success(help_text, icon="🧸")
+        container.success(real_help_text, icon=f"{re()}")
         st.stop()
 
     seconds = int((dest_day - now).total_seconds())
@@ -72,9 +111,12 @@ while True:
 
     d_col, h_col, m_col, s_col = container.columns(4)
 
-    d_col.metric(label=":blue[天]", value=f"{days}")
-    h_col.metric(label=":yellow[小时]", value=f"{hours}")
-    m_col.metric(label=":green[分钟]", value=f"{minutes}")
-    s_col.metric(label=":red[秒]", value=f"{seconds}")
+    d_col.metric(label=f":rainbow[{re()}] :{rc()}[天]", value=f"{days}")
+    h_col.metric(label=f":rainbow[{re()}] :{rc()}[小时]", value=f"{hours}")
+    m_col.metric(label=f":rainbow[{re()}] :{rc()}[分钟]", value=f"{minutes}")
+    s_col.metric(label=f":rainbow[{re()}] :{rc()}[秒]", value=f"{seconds}")
 
-    time.sleep(1)
+    n += 1; time.sleep(1)
+
+    if n % 60 == 0:
+        st.rerun()
