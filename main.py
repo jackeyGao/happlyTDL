@@ -65,7 +65,7 @@ while True:
     )
 
     if dest_day < now:
-        container.info(help_text, icon="🧸")
+        container.success(help_text, icon="🧸")
         st.stop()
 
     seconds = int((dest_day - now).total_seconds())
