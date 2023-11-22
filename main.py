@@ -20,7 +20,6 @@ st.header(f"🧸 快乐时间倒计时")
 
 params = st.experimental_get_query_params()
 
-
 def initialize_default_datetime():
     value = params.get('datetime', [])
 
@@ -32,18 +31,16 @@ def initialize_default_datetime():
 
 date_col, time_col = st.columns(2)
 
-with date_col:
-    dest_date = st.date_input(
-        "日期",
-        value=initialize_default_datetime().date(),
-        min_value=datetime.datetime.now(tz=tz)
-    )
+dest_date = date_col.date_input(
+    "日期",
+    value=initialize_default_datetime().date(),
+    min_value=datetime.datetime.now(tz=tz)
+)
 
-with time_col:
-    dest_time = st.time_input(
-        "时间",
-        value=initialize_default_datetime().time(),
-    )
+dest_time = time_col.time_input(
+    "时间",
+    value=initialize_default_datetime().time(),
+)
 
 st.image(random_image, caption="来自 unsplash")
 
@@ -75,16 +72,9 @@ while True:
 
     d_col, h_col, m_col, s_col = container.columns(4)
 
-    with d_col:
-        st.metric(label=":blue[天]", value=f"{days}")
-
-    with h_col:
-        st.metric(label=":yellow[小时]", value=f"{hours}")
-
-    with m_col:
-        st.metric(label=":green[分钟]", value=f"{minutes}")
-
-    with s_col:
-        st.metric(label=":red[秒]", value=f"{seconds}")
+    d_col.metric(label=":blue[天]", value=f"{days}")
+    h_col.metric(label=":yellow[小时]", value=f"{hours}")
+    m_col.metric(label=":green[分钟]", value=f"{minutes}")
+    s_col.metric(label=":red[秒]", value=f"{seconds}")
 
     time.sleep(1)
