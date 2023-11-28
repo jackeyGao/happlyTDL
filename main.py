@@ -18,8 +18,11 @@ page_title = "快乐时间倒计时"
 def rc():
     return random.choice(colors)
 
-def re():
-    return random.choice(emojis)
+def re(k: int=1):
+    if k > 1:
+        return random.sample(emojis, k=k)
+    else:
+        return random.sample(emojis, k=1)[0]
 
 def rsc(input: str, ignores: list=None):
     if not ignores:
@@ -108,13 +111,17 @@ while True:
     days, seconds = divmod(seconds, 86400)
     hours, seconds = divmod(seconds, 3600)
     minutes, seconds = divmod(seconds, 60)
+    colors_sample = [ f":rainbow[{i}]" for i in re(k=4) ]
 
     d_col, h_col, m_col, s_col = container.columns(4)
 
-    d_col.metric(label=f":rainbow[{re()}] :{rc()}[天]", value=f"{days}")
-    h_col.metric(label=f":rainbow[{re()}] :{rc()}[小时]", value=f"{hours}")
-    m_col.metric(label=f":rainbow[{re()}] :{rc()}[分钟]", value=f"{minutes}")
-    s_col.metric(label=f":rainbow[{re()}] :{rc()}[秒]", value=f"{seconds}")
+    d_col.metric(label=f"{colors_sample.pop()} :{rc()}[天]", value=f"{days}")
+    h_col.metric(label=f"{colors_sample.pop()} :{rc()}[小时]", value=f"{hours}")
+    # h_col.progress(value=1 - hours / 24)
+    m_col.metric(label=f"{colors_sample.pop()} :{rc()}[分钟]", value=f"{minutes}")
+    # m_col.progress(value=1 - minutes / 60)
+    s_col.metric(label=f"{colors_sample.pop()} :{rc()}[秒]", value=f"{seconds}")
+    # s_col.progress(value=1 - seconds / 60)
 
     n += 1; time.sleep(1)
 
