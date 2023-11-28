@@ -63,7 +63,12 @@ st.markdown("""
 
 params = st.experimental_get_query_params()
 
+
 @st.cache_resource
+def initialize_now():
+    return arrow.now(tz=tz).shift(days=1).replace(hour=0, minute=0)
+
+
 def initialize_default_datetime():
     # if 'dest_datetime' in st.session_state:
     #     return arrow.get(st.session_state.dest_datetime)
@@ -73,7 +78,7 @@ def initialize_default_datetime():
     if value and isinstance(value, list):
         return arrow.get(value[0])
     
-    return arrow.now(tz=tz).shift(days=1).replace(hour=0, minute=0)
+    return initialize_now()
 
 
 date_col, time_col = st.columns(2)
