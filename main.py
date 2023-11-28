@@ -15,6 +15,7 @@ emojis = ['🧸', '🎊', '🎉', '🎎', '🪭', '🏮', '🏮']
 page_icon = "🧸"
 page_title = "快乐时间倒计时"
 
+
 def rc():
     return random.choice(colors)
 
@@ -53,9 +54,16 @@ img_ref = "https://unsplash.com/"
 
 st.set_page_config(page_title=page_title, page_icon=page_icon)
 st.header(f":rainbow[{page_icon}]" + rsc(f" _{page_title}_", ignores=['_']))
+st.markdown("""
+<style>
+.st-b9 .st-dk {
+  height: 1px!important;     
+}
+</style>""",unsafe_allow_html=True)
 
 params = st.experimental_get_query_params()
 
+@st.cache_resource
 def initialize_default_datetime():
     # if 'dest_datetime' in st.session_state:
     #     return arrow.get(st.session_state.dest_datetime)
@@ -65,7 +73,7 @@ def initialize_default_datetime():
     if value and isinstance(value, list):
         return arrow.get(value[0])
     
-    return arrow.now(tz=tz).shift(days=1)
+    return arrow.now(tz=tz).shift(days=1).replace(hour=0, minute=0)
 
 
 date_col, time_col = st.columns(2)
@@ -117,11 +125,11 @@ while True:
 
     d_col.metric(label=f"{colors_sample.pop()} :{rc()}[天]", value=f"{days}")
     h_col.metric(label=f"{colors_sample.pop()} :{rc()}[小时]", value=f"{hours}")
-    # h_col.progress(value=1 - hours / 24)
+    h_col.progress(value=1 - hours / 24)
     m_col.metric(label=f"{colors_sample.pop()} :{rc()}[分钟]", value=f"{minutes}")
-    # m_col.progress(value=1 - minutes / 60)
+    m_col.progress(value=1 - minutes / 60)
     s_col.metric(label=f"{colors_sample.pop()} :{rc()}[秒]", value=f"{seconds}")
-    # s_col.progress(value=1 - seconds / 60)
+    s_col.progress(value=1 - seconds / 60)
 
     n += 1; time.sleep(1)
 
