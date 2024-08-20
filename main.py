@@ -49,8 +49,8 @@ help_text = """
 real_help_text = rsc(help_text, ['*'])
 
 
-random_image = "https://source.unsplash.com/1600x900/?background"
-img_ref = "https://unsplash.com/"
+random_image = "https://loremflickr.com/1600/900/background"
+img_ref = "https://loremflickr.com"
 
 st.set_page_config(page_title=page_title, page_icon=page_icon)
 st.header(f":rainbow[{page_icon}]" + rsc(f" _{page_title}_", ignores=['_']))
